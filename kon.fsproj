@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="exec.fs" />
+    <Compile Include="regex.fs" />
+    <Compile Include="lexer.fs" />
+    <Compile Include="parser.fs" />
+  </ItemGroup>
+
+</Project>
