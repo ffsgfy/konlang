@@ -6,10 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="exec.fs" />
-    <Compile Include="regex.fs" />
-    <Compile Include="lexer.fs" />
-    <Compile Include="parser.fs" />
+    <Compile Include="src/exec.fs" />
+    <Compile Include="src/regex.fs" />
+    <Compile Include="src/lexer.fs" />
+    <Compile Include="src/parser.fs" />
   </ItemGroup>
 
 </Project>
