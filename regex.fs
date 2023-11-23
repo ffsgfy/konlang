@@ -7,6 +7,7 @@ module Regex
 type Expr =
     | Any
     | Chr of char
+    | Nch of char // not char
     | Rng of char * char
     | Opt of Expr
     | Alt of Expr list
@@ -14,6 +15,8 @@ type Expr =
     | Rep of Expr
 
 let onePlus expr = Cat [expr; Rep expr]
+let oneOf str = str |> Seq.map Chr |> Seq.toList |> Alt;
+let literal str = str |> Seq.map Chr |> Seq.toList |> Cat;
 
 type State =
     {
@@ -30,7 +33,7 @@ type State =
 
 let prepare expr =
     let rec getSize = function
-        | Any | Chr _ | Rng _ -> 1
+        | Any | Chr _ | Nch _ | Rng _ -> 1
         | Opt item | Rep item -> 1 + getSize item
         | Alt items | Cat items -> 1 + Seq.sumBy getSize items
 
@@ -38,7 +41,7 @@ let prepare expr =
     let state = { empty = Array.zeroCreate size; final = Array.zeroCreate size; broken = true }
 
     let rec setEmpty index = function
-        | Any | Chr _ | Rng _ -> 1
+        | Any | Chr _ | Nch _ | Rng _ -> 1
         | Opt item | Rep item -> state.setEmpty index true; 1 + setEmpty (index + 1) item
         | Alt items -> setEmptyItems (||) (items.Length = 0) index items
         | Cat items -> setEmptyItems (&&) true index items
@@ -73,6 +76,14 @@ let rec shift (state: State) index mark chr expr =
 
     | Chr c ->
         let final = mark && c = chr
+        if final then
+            state.broken <- false
+
+        state.setFinal index final
+        1
+
+    | Nch c ->
+        let final = mark && c <> chr
         if final then
             state.broken <- false
 
