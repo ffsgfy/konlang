@@ -11,6 +11,7 @@
     <Compile Include="src/lexer.fs" />
     <Compile Include="src/parser.fs" />
     <Compile Include="src/ast.fs" />
+    <Compile Include="src/interp.fs" />
   </ItemGroup>
 
 </Project>
