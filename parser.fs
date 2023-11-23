@@ -80,11 +80,19 @@ and triggerCallbacks key value (ctx: Exec.Context<State>) =
         |> Exec.scheduleTasks (Seq.map ((|>) value) callbacks)
     | None -> ctx
 
-let parse rulemap input start =
+let rec postprocess node =
+    match node with
+    | Token _ -> node
+    | Symbol (name, item) -> Symbol (name, postprocess item)
+    | Group items -> items |> List.rev |> List.map postprocess |> Group
+    | Epsilon -> Epsilon
+
+let parse rulemap start input =
     let mutable result = List.empty
     let state = { input = input; cache = Map.empty; rules = rulemap }
     let callback value ctx =
-        result <- value :: result
+        if (snd value) = (List.length input) then
+            result <- (fst value |> postprocess) :: result
         ctx
 
     Exec.runTask (matchSymbol 0 start callback) state |> ignore
