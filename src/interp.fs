@@ -129,8 +129,11 @@ let ctrlMod argLhs =
 let ctrlEq argLhs =
     VCtrl <| wrapCtrl (fun argRhs ->
         match (argLhs, argRhs) with
+        | (VUnit, VUnit) -> VBool true
         | (VInt lhs, VInt rhs) -> VBool (lhs = rhs)
-        | _ -> raise (System.Exception "Arguments must be integers")
+        | (VStr lhs, VStr rhs) -> VBool (lhs = rhs)
+        | (VBool lhs, VBool rhs) -> VBool (lhs = rhs)
+        | _ -> VBool false
     )
 
 let ctrlLt argLhs =
