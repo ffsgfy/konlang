@@ -10,6 +10,7 @@
     <Compile Include="src/regex.fs" />
     <Compile Include="src/lexer.fs" />
     <Compile Include="src/parser.fs" />
+    <Compile Include="src/ast.fs" />
   </ItemGroup>
 
 </Project>
