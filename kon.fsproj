@@ -12,6 +12,7 @@
     <Compile Include="src/parser.fs" />
     <Compile Include="src/ast.fs" />
     <Compile Include="src/interp.fs" />
+    <Compile Include="src/main.fs" />
   </ItemGroup>
 
 </Project>
