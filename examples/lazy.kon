@@ -1,0 +1,19 @@
+# Lazy expressions capture the surrounding scope at the moment of their creation
+
+bind "a" 5;
+bind "b" 7;
+bind "lazy" {add a b};
+print (add a b);  # 12
+print (eval lazy);  # 12
+
+bind "a" 2;
+bind "b" 3;
+print (add a b);  # 5
+print (eval lazy);  # 12
+
+# A new lazy expression with altered bindings can be created with `bindl`
+
+bind "lazy" (bindl "a" 2 lazy);
+bind "lazy" (bindl "b" 3 lazy);
+print (eval lazy);  # 5
+print (eval (bindl "add" mul lazy));  # 6

@@ -1,0 +1,10 @@
+bindr "fast-pow" (func "base" "exponent" {
+    if (gt exponent 0) {
+        bind "result" (fast-pow base (div exponent 2));
+        bind "result" (mul result result);
+        if (eq (mod exponent 2) 0) {result} {mul result base}
+    } {1}
+});
+
+# 4294967296
+fast-pow 2 32

@@ -1,0 +1,11 @@
+bind "inc" (func "n" {add n 1});  # unused
+bind "dec" (func "n" {sub n 1});
+
+bindr "factorial" (func "n" {
+    if (gt n 1)
+        {mul n (factorial (dec n))}
+        {1}
+});
+
+# 3628800
+factorial 10

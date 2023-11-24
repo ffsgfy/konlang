@@ -1,0 +1,12 @@
+bindr "reduce" (func "sentinel" "op" "arg1" "arg2" {
+    if (eq sentinel arg2) {
+        arg1
+    } {
+        reduce sentinel op (op arg1 arg2)
+    }
+});
+
+bind "reduce-until-unit" (reduce ());
+
+# 45
+reduce-until-unit add 1 2 3 4 5 6 7 8 9 ()

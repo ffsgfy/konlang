@@ -1,0 +1,10 @@
+bindr "fibonacci" (func "n" {
+    if (ge n 2) {
+        add (fibonacci (sub n 1)) (fibonacci (sub n 2))
+    } {
+        if (eq n 1) {1} {0}
+    }
+});
+
+# 46368
+fibonacci 24

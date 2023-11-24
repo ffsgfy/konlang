@@ -1,0 +1,38 @@
+# Convention:
+# - `if-chain` accepts arguments in pairs of (condition, result), terminated by `()`
+# - `if-chain` returns `()` if all conditions were `false`, or the first result for which condition was `true`
+# - both conditions and their corresponding results are lazy expressions
+
+bindr "if-chain" (func "condition" {
+    if (not (eq condition ())) {
+        func "result" {
+            if (eval condition) {
+                bind "result" (eval result);
+                bindr "sink" (func "arg" {if (eq arg ()) {result} {sink}});
+                sink
+            } {
+                if-chain
+            }
+        }
+    } {}
+});
+
+bind "foo-bar" (func "n" {
+    print (
+        if-chain
+            {and (eq (mod n 3) 0) (eq (mod n 5) 0)} {"FooBar"}
+            {eq (mod n 3) 0} {"Foo"}
+            {eq (mod n 5) 0} {"Bar"}
+            {true} {""}
+        ()
+    )
+});
+
+bindr "for" (func "start" "stop" "step" "action" {
+    if (lt start stop) {
+        action start;
+        for (add start step) stop step action
+    } {}
+});
+
+for 0 16 1 foo-bar
