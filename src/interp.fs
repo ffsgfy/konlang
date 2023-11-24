@@ -164,6 +164,25 @@ let ctrlGe argLhs =
         | _ -> raise (System.Exception "Arguments must be integers")
     )
 
+let ctrlOr argLhs =
+    VCtrl <| wrapCtrl (fun argRhs ->
+        match (argLhs, argRhs) with
+        | (VBool lhs, VBool rhs) -> VBool (lhs || rhs)
+        | _ -> raise (System.Exception "Arguments must be booleans")
+    )
+
+let ctrlAnd argLhs =
+    VCtrl <| wrapCtrl (fun argRhs ->
+        match (argLhs, argRhs) with
+        | (VBool lhs, VBool rhs) -> VBool (lhs && rhs)
+        | _ -> raise (System.Exception "Arguments must be booleans")
+    )
+
+let ctrlNot arg =
+    match arg with
+    | VBool value -> VBool (not value)
+    | _ -> raise (System.Exception "Argument must be a boolean")
+
 let builtins = Map.ofList [
     "bind", VCtrl <| wrapCtrl ctrlBind;
     "bindr", VCtrl <| wrapCtrl ctrlBindRec;
@@ -181,6 +200,9 @@ let builtins = Map.ofList [
     "le", VCtrl <| wrapCtrl ctrlLe;
     "gt", VCtrl <| wrapCtrl ctrlGt;
     "ge", VCtrl <| wrapCtrl ctrlGe;
+    "or", VCtrl <| wrapCtrl ctrlOr;
+    "and", VCtrl <| wrapCtrl ctrlAnd;
+    "not", VCtrl <| wrapCtrl ctrlNot;
 
     "true", VBool true;
     "false", VBool false;
