@@ -183,6 +183,8 @@ let ctrlNot arg =
     | VBool value -> VBool (not value)
     | _ -> raise (System.Exception "Argument must be a boolean")
 
+let ctrlPrint arg = printfn "%A" arg; VUnit
+
 let builtins = Map.ofList [
     "bind", VCtrl <| wrapCtrl ctrlBind;
     "bindr", VCtrl <| wrapCtrl ctrlBindRec;
@@ -203,6 +205,7 @@ let builtins = Map.ofList [
     "or", VCtrl <| wrapCtrl ctrlOr;
     "and", VCtrl <| wrapCtrl ctrlAnd;
     "not", VCtrl <| wrapCtrl ctrlNot;
+    "print", VCtrl <| wrapCtrl ctrlPrint;
 
     "true", VBool true;
     "false", VBool false;
