@@ -1,0 +1,60 @@
+# Convention:
+# - lists are functions
+# - `list -1` returns the head of the list (first element)
+# - `list 0` returns the size of the list
+# - `list 1` returns the tail of the list (all elements except the first)
+
+bind "list-head" (func "list" {list -1});
+bind "list-size" (func "list" {list 0});
+bind "list-tail" (func "list" {list 1});
+
+bindr "list-empty" (func "arg" {
+    if (le arg 0) {
+        if (lt arg 0)
+            {()}
+            {0}
+    } {list-empty}
+});
+
+bind "list-cons" (func "head" "tail" {
+    bind "size" (add 1 (list-size tail));
+    func "arg" {
+        if (le arg 0) {
+            if (lt arg 0)
+                {head}
+                {size}
+        } {tail}
+    }
+});
+
+bindr "list-rev" (func "list" {
+    bindr "builder" (func "done" "pending" {
+        if (gt (list-size pending) 0) {
+            builder (list-cons (list-head pending) done) (list-tail pending)
+        } {done}
+    });
+    builder list-empty list
+});
+
+bindr "list-item" (func "i" "list" {
+    if (le i 0) {list-head list} {list-item (sub i 1) (list-tail list)}
+});
+
+bind "list-until" (func "sentinel" {
+    bindr "builder" (func "list" "arg" {
+        if (eq arg sentinel) {list-rev list} {builder (list-cons arg list)}
+    });
+    builder list-empty
+});
+
+bindr "list-map" (func "action" "list" {
+    if (gt (list-size list) 0) {
+        list-cons (action (list-head list)) (list-map action (list-tail list))
+    } {list}
+});
+
+bind "mylist" (list-until () 1 2 3 "zero" -3 -2 -1 ());
+print (list-size mylist);  # 7
+print (list-item 3 mylist);  # "zero"
+print ();
+list-map print mylist;

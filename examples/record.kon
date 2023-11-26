@@ -1,0 +1,44 @@
+# Convention:
+# - records are "stacked" functions, where each function in the stack stores a single attribute
+# - `record false` gets the name of the first attribute (or `()` if empty)
+# - `record true` gets the value of the first attribute (or `()` if empty)
+# - `record ()` returns the rest of the function/attribute stack
+
+bind "rec-stack" (func "attr" "value" "rec" "arg" {
+    if (eq arg ()) {rec} {if arg {value} {attr}}
+});
+
+bindr "rec-empty" (func "arg" {
+    if (eq arg ()) {rec-empty} {()}
+});
+
+bindr "rec-get" (func "attr" "rec" {
+    bind "name" (rec false);
+    if (or (eq name ()) (eq name attr))
+        {rec true}
+        {rec-get attr (rec ())}
+});
+
+bindr "rec-set" (func "attr" "value" "rec" {
+    bind "name" (rec false);
+    if (or (eq name ()) (eq name attr)) {
+        rec-stack attr value (rec ())
+    } {
+        rec-stack name (rec true) (rec-set attr value (rec ()))
+    }
+});
+
+bind "myrec" rec-empty;
+bind "myrec" (rec-set "size" 42 myrec);
+bind "myrec" (rec-set "color" "purple" myrec);
+bind "myrec" (rec-set false true myrec);
+bind "myrec" (rec-set true false myrec);
+bind "myrec" (rec-set 0 1 myrec);
+bind "myrec" (rec-set 1 100 myrec);
+
+print (rec-get "color" myrec);  # purple
+print (rec-get true myrec);  # false
+print (rec-get false myrec);  # true
+print (rec-get 1 myrec);  # 100
+print (rec-get 0 myrec);  # 1
+print (rec-get "size" myrec);  # 42
